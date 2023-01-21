@@ -10,13 +10,9 @@ import InvoiceModal from './InvoiceModal';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 class InvoiceForm extends React.Component {
-  
- 
   constructor(props) {
-    
     super(props);
     this.state = {
-      
       isOpen: false,
       currency: '$',
       currentDate: '',
@@ -50,7 +46,6 @@ class InvoiceForm extends React.Component {
   componentDidMount(prevProps) {
     this.handleCalculateTotal()
   }
-  
   handleRowDel(items) {
     var index = this.state.items.indexOf(items);
     this.state.items.splice(index, 1);
@@ -68,19 +63,14 @@ class InvoiceForm extends React.Component {
     this.state.items.push(items);
     this.setState(this.state.items);
   }
-
- 
   handleCalculateTotal() {
     var items = this.state.items;
-    
-    var subTotal =  0;
-    items.map(function(items) {
-      console.log('items : ',items)
-      console.log('items Price : ',items.price)
-      subTotal = parseFloat(subTotal + (parseFloat(items.price).toFixed(2) * parseInt(items.quantity))).toFixed(2)
-      console.log('Sub Total at the end : ',subTotal)
-    });
+    var subTotal = 0;
 
+    items.forEach(function(item) {
+      subTotal += parseFloat(item.price) * parseInt(item.quantity);
+    });
+subTotal = subTotal.toFixed(2);
     this.setState({
       subTotal: parseFloat(subTotal).toFixed(2)
     }, () => {
@@ -98,6 +88,29 @@ class InvoiceForm extends React.Component {
     });
 
   };
+
+  // handleCalculateTotal() {
+  //   var items = this.state.items;
+  //   var subTotal = items.reduce((total, item) => {
+  //     return total + (item.price * item.quantity);
+  //   }, 0);
+  //   this.setState({
+  //     subTotal: subTotal.toFixed(2)
+  //   }, () => {
+  //     this.setState({
+  //       taxAmmount: (subTotal * (this.state.taxRate / 100)).toFixed(2)
+  //     }, () => {
+  //       this.setState({
+  //         discountAmmount: (subTotal * (this.state.discountRate / 100)).toFixed(2)
+  //       }, () => {
+  //         this.setState({
+  //           total: (subTotal - this.state.discountAmmount + this.state.taxAmmount)
+  //         });
+  //       });
+  //     });
+  //   });
+  // };
+
   onItemizedItemEdit(evt) {
     var item = {
       id: evt.target.id,
@@ -132,7 +145,6 @@ class InvoiceForm extends React.Component {
   };
   closeModal = (event) => this.setState({isOpen: false});
   render() {
-    
     return (<Form onSubmit={this.openModal}>
       <Row>
         <Col md={8} lg={9}>
